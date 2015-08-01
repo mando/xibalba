@@ -1,5 +1,4 @@
 require 'celluloid'
-require 'termbox'
 require 'colorize'
 
 module Xibalba
