@@ -25,7 +25,14 @@ module Xibalba
     end
 
     def handle
-      loop { socket.readpartial(4096) }
+      loop {
+        socket.readpartial(4096)
+        say "You DIE."
+        say "Sorry, this is " + "Xibalba".colorize(:red)
+        say "Anything you do will kill you."
+        say "Try again later!"
+        disconnect
+      }
     rescue => e
       # Anything goes wrong in here and just disconnect
       disconnect
@@ -46,14 +53,20 @@ module Xibalba
         end
       end
 
-      def say(s, nap_time=1)
+      def write(s)
         socket.write s
+      rescue
+        # In case someone rudely disconnects while we're talking
+      end
+
+      def say(s, nap_time=1)
+        write s + "\n"
         sleep nap_time
       end
 
       def introduce_ourselves
         clear
-        say "Welcome to"
+        write "Welcome to"
         3.times do
           say "."
         end
@@ -61,19 +74,22 @@ module Xibalba
         say Xibalba::BANNER.colorize(:red)
         newline
         newline
-        say "NOTHING HERE YET!\n"
+        say "You find yourself standing in front of a super creepy cave."
         newline
-        newline
-        say "GO AWAY!\n"
-        disconnect
+        say "What do you want to do?", 0
+        prompt
       end
 
       def clear
-        say "\033[2J\033[H", 0
+        write "\033[2J\033[H"
       end
 
       def newline
-        say "\033[E", 0
+        write "\033[E"
+      end
+
+      def prompt
+        write "> "
       end
   end
 end
