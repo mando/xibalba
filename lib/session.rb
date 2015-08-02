@@ -28,7 +28,7 @@ module Xibalba
       loop {
         socket.readpartial(4096)
         say "You DIE."
-        say "Sorry, this is " + "Xibalba".colorize(:red)
+        say "Sorry, this is " + "Xibalba".colorize(:red) + "."
         say "Anything you do will kill you."
         say "Try again later!"
         disconnect
@@ -53,22 +53,22 @@ module Xibalba
         end
       end
 
-      def write(s)
+      def write(s, nap_time=0)
         socket.write s
+        sleep nap_time
       rescue
         # In case someone rudely disconnects while we're talking
       end
 
       def say(s, nap_time=1)
-        write s + "\n"
-        sleep nap_time
+        write s + "\n", nap_time
       end
 
       def introduce_ourselves
         clear
         write "Welcome to"
         3.times do
-          say "."
+          write ".", 1
         end
         newline
         say Xibalba::BANNER.colorize(:red)
